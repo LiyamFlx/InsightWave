@@ -1,156 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>InsightWave - Engagement Analysis Calculator</title>
-  <style>
-    body, h2, p, button {
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-    }
-    body {
-      background-color: #121212;
-      color: #f0f0f0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-    }
-    .container {
-      width: 90%;
-      max-width: 600px;
-      padding: 20px;
-      background: #1e1e1e;
-      border-radius: 8px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-      text-align: center;
-    }
-    .button {
-      padding: 10px 20px;
-      margin: 10px;
-      font-size: 1rem;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-    .button.start { background-color: #FFDD57; }
-    .button.start:hover { background-color: #FFC107; }
-    .button.back, .button.next {
-      background-color: #FF6E40;
-    }
-    .button.back:hover, .button.next:hover {
-      background-color: #FF5722;
-    }
-    .progress-bar-container {
-      width: 100%;
-      background: #333;
-      border-radius: 4px;
-      overflow: hidden;
-      margin: 20px 0;
-    }
-    .progress-bar {
-      height: 20px;
-      width: 0;
-      background: #FFDD57;
-      transition: width 0.2s;
-    }
-    .results {
-      text-align: left;
-      margin-top: 20px;
-    }
-    .chart-container {
-      margin-top: 20px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InsightWave - Advanced Engagement Analysis</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <div class="container">
+        <header>
+            <h1>InsightWave</h1>
+            <nav>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Login</a></li>
+                </ul>
+            </nav>
+        </header>
 
-<div class="container">
-  <!-- Start Screen -->
-  <div id="startScreen" class="screen">
-    <h2>Welcome to InsightWave</h2>
-    <p>Analyze your audio content and gain AI-driven insights into engagement levels and sentiment.</p>
-    <button class="button start" onclick="nextScreen('uploadScreen')">Start Analysis</button>
-  </div>
+        <main>
+            <div id="startScreen" class="screen">
+                <h2>Welcome to InsightWave</h2>
+                <p>Analyze your audio content and gain valuable insights.</p>
+                <input type="file" id="fileInput" accept=".mp3,.wav,.mp4">
+                <button class="button start">Start Analysis</button>
+            </div>
 
-  <!-- Upload Screen -->
-  <div id="uploadScreen" class="screen" style="display: none;">
-    <h2>Upload File</h2>
-    <input type="file" id="fileInput" accept=".mp3,.mp4">
-    <div class="progress-bar-container">
-      <div id="progressBar" class="progress-bar"></div>
+            <div id="analysisScreen" class="screen" style="display: none;">
+                <h2>Real-Time Analysis</h2>
+                <p>Analyzing your audio...</p>
+                <div class="progress-bar-container">
+                    <div id="progressBarAnalysis" class="progress-bar"></div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="myChart"></canvas>
+                </div>
+            </div>
+
+            <div id="resultsScreen" class="screen" style="display: none;">
+                <h2>Analysis Results</h2>
+                <div class="results-breakdown">
+                    <h3>Overall Engagement Score</h3>
+                    <p><strong>8.2/10</strong></p>
+                </div>
+                <div class="chart-container">
+                    </div>
+                <button class="button download">Download Report</button>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 InsightWave. All rights reserved.</p>
+        </footer>
     </div>
-    <div>
-      <button class="button back" onclick="prevScreen('startScreen')">Back</button>
-      <button class="button next" onclick="startAnalysis()">Calculate Engagement</button>
-    </div>
-  </div>
 
-  <!-- Analysis Screen -->
-  <div id="analysisScreen" class="screen" style="display: none;">
-    <h2>Real-Time Analysis</h2>
-    <p>Analyzing volume, pitch, sentiment, and more...</p>
-    <div class="progress-bar-container">
-      <div id="progressBarAnalysis" class="progress-bar"></div>
-    </div>
-    <button class="button next" onclick="nextScreen('resultsScreen')">View Results</button>
-  </div>
-
-  <!-- Results Screen -->
-  <div id="resultsScreen" class="screen" style="display: none;">
-    <h2>Analysis Results</h2>
-    <div class="results">
-      <h3>Key Insights:</h3>
-      <ul>
-        <li><strong>Overall Engagement Score:</strong> 7.8/10</li>
-        <li><strong>Peak Engagement Times:</strong> Segment 1, Segment 3</li>
-        <li><strong>Improvement Tips:</strong> Increase interaction during pauses.</li>
-      </ul>
-      <button class="button next" onclick="downloadReport()">Download Report</button>
-    </div>
-    <button class="button back" onclick="prevScreen('analysisScreen')">Back</button>
-  </div>
-</div>
-
-<script>
-  function nextScreen(screenId) {
-    document.querySelectorAll('.screen').forEach(screen => screen.style.display = 'none');
-    document.getElementById(screenId).style.display = 'block';
-  }
-
-  function prevScreen(screenId) {
-    nextScreen(screenId);
-  }
-
-  function startAnalysis() {
-    nextScreen('analysisScreen');
-    simulateProgressBar('progressBarAnalysis', 100, 2000, () => {
-      document.getElementById('progressBarAnalysis').style.width = '100%';
-    });
-  }
-
-  function simulateProgressBar(barId, targetWidth, duration, callback) {
-    const bar = document.getElementById(barId);
-    let width = 0;
-    const interval = setInterval(() => {
-      width += 1;
-      bar.style.width = width + '%';
-      if (width >= targetWidth) {
-        clearInterval(interval);
-        if (callback) callback();
-      }
-    }, duration / targetWidth);
-  }
-
-  function downloadReport() {
-    alert("Report downloaded as CSV.");
-  }
-</script>
-
+    <script src="script.js"></script>
 </body>
 </html>
-

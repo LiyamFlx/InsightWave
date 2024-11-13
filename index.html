@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InsightWave - Enhanced Engagement Analysis</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="dark-mode">
+
+    <header>
+        <h1>InsightWave Engagement Analysis</h1>
+        <p>Deep insights into your audio content, powered by AI.</p>
+    </header>
+
+    <!-- Start Screen -->
+    <main id="app">
+        <section class="screen active" id="startScreen">
+            <h2>Welcome to InsightWave</h2>
+            <p>Analyze your audio content and gain AI-driven insights into engagement levels and sentiment.</p>
+            <button onclick="showScreen('uploadScreen')">Start Analysis</button>
+        </section>
+
+        <!-- File Upload Screen -->
+        <section class="screen" id="uploadScreen">
+            <h2>Upload Your Audio File</h2>
+            <input type="file" id="fileInput" accept=".mp3,.wav">
+            <p class="hint">Supported formats: .mp3, .wav</p>
+            <div class="navigation">
+                <button onclick="showScreen('startScreen')">Back</button>
+                <button onclick="showScreen('analysisScreen')">Next</button>
+            </div>
+        </section>
+
+        <!-- Real-Time Analysis Screen -->
+        <section class="screen" id="analysisScreen">
+            <h2>Real-Time Analysis</h2>
+            <p id="progressText">Analyzing volume, pitch, sentiment, and more...</p>
+            <div class="progress-bar">
+                <div id="progressFill"></div>
+            </div>
+            <canvas id="realTimeChart" style="display: none;"></canvas>
+            <div class="navigation">
+                <button onclick="showScreen('uploadScreen')">Back</button>
+                <button onclick="showScreen('resultsScreen')">View Results</button>
+            </div>
+        </section>
+
+        <!-- Results Screen -->
+        <section class="screen" id="resultsScreen">
+            <h2>Analysis Results</h2>
+            <div id="summary">
+                <h3>Key Insights</h3>
+                <ul>
+                    <li><strong>Overall Engagement Score:</strong> <span id="engagementScore">-</span>/10</li>
+                    <li><strong>Peak Engagement Times:</strong> Segment 1, Segment 3</li>
+                    <li><strong>Improvement Tips:</strong> Increase interaction during pauses</li>
+                </ul>
+            </div>
+            <div id="charts">
+                <canvas id="engagementChart"></canvas>
+                <canvas id="sentimentChart"></canvas>
+            </div>
+            <button onclick="downloadReport()">Download Report</button>
+            <div class="navigation">
+                <button onclick="showScreen('analysisScreen')">Back</button>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // JavaScript to handle screen navigation and functionality
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        showScreen('startScreen'); // Start on the first screen
+
+        // Function to simulate the analysis process
+        function startAnalysis() {
+            const progressText = document.getElementById('progressText');
+            const progressFill = document.getElementById('progressFill');
+            const realTimeChart = document.getElementById('realTimeChart');
+
+            progressText.textContent = 'Analyzing audio content...';
+            realTimeChart.style.display = 'block';
+
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 10;
+                progressFill.style.width = progress + '%';
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    displayResults();
+                }
+            }, 500);
+        }
+
+        // Function to display results
+        function displayResults() {
+            const engagementScore = document.getElementById('engagementScore');
+            engagementScore.textContent = (Math.random() * 10).toFixed(2);
+
+            const engagementChart = new Chart(document.getElementById('engagementChart').getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: ['0s', '10s', '20s', '30s', '40s', '50s'],
+                    datasets: [{
+                        label: 'Engagement Score',
+                        data: Array.from({ length: 6 }, () => Math.floor(Math.random() * 10)),
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        fill: false,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+
+            const sentimentChart = new Chart(document.getElementById('sentimentChart').getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: ['0s', '10s', '20s', '30s', '40s', '50s'],
+                    datasets: [{
+                        label: 'Sentiment Score',
+                        data: Array.from({ length: 6 }, () => Math.floor(Math.random() * 10)),
+                        borderColor: 'rgba(153, 102, 255, 1)',
+                        fill: false,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        // Function to download a sample report
+        function downloadReport() {
+            const csvContent = "data:text/csv;charset=utf-8,Time,Engagement Score,Sentiment Score\n" +
+                "0s,8,7\n" +
+                "10s,7,6\n" +
+                "20s,6,5\n" +
+                "30s,9,8\n" +
+                "40s,8,7\n" +
+                "50s,9,8\n";
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "engagement_report.csv");
+            document.body.appendChild(link); // Required for FF
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+
+    <style>
+        /* Basic Styling */
+        body, h1, h2, h3, p, ul, button {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            color: #f0f0f0;
+        }
+
+        body.dark-mode {
+            background-color: #121212;
+            color: #f0f0f0;
+        }
+
+        #app {
+            width: 80%;
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #1e1e1e;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        h1 {
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            background: #333;
+            border-radius: 5px;
+            margin: 1rem 0;
+        }
+
+        #progressFill {
+            height: 20px;
+            background-color: #4caf50;
+            width: 0;
+            border-radius: 5px;
+        }
+
+        #charts canvas {
+            margin: 1rem 0;
+            max-width: 100%;
+        }
+
+        .navigation button {
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            background-color: #4caf50;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .navigation button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</body>
+</html>
+

@@ -1,293 +1,155 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InsightWave - Enhanced Engagement Analysis</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        /* Basic Styling and Dark Mode */
-        body, h1, h2, h3, p, ul, button {
-            margin: 0;
-            padding: 0;
-            font-family: 'Poppins', sans-serif;
-            color: #f0f0f0;
-        }
-
-        body.dark-mode {
-            background-color: #1d1f27;
-            color: #f0f0f0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        #app {
-            width: 90%;
-            max-width: 900px;
-            padding: 2rem;
-            background-color: #2a2d3e;
-            border-radius: 12px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
-            text-align: center;
-        }
-
-        .screen {
-            display: none;
-        }
-
-        .screen.active {
-            display: block;
-        }
-
-        header {
-            margin-bottom: 2rem;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            color: #ffbc42;
-        }
-
-        h2 {
-            font-size: 1.8rem;
-            margin-bottom: 0.5rem;
-            color: #ffbc42;
-        }
-
-        .hint, p {
-            color: #cccccc;
-        }
-
-        input[type="file"] {
-            margin: 1rem auto;
-            padding: 10px;
-            background-color: #333;
-            color: #f0f0f0;
-            border: 2px dashed #ffbc42;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        .navigation button {
-            margin: 1rem 0.5rem;
-            padding: 0.6rem 1.5rem;
-            border: none;
-            border-radius: 8px;
-            background-color: #ffbc42;
-            color: #1d1f27;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            box-shadow: 0 4px 8px rgba(255, 188, 66, 0.3);
-        }
-
-        .navigation button:hover {
-            background-color: #ff9f1c;
-            color: #fff;
-        }
-
-        .progress-bar {
-            width: 100%;
-            background: #333;
-            border-radius: 8px;
-            margin: 1rem 0;
-            overflow: hidden;
-            height: 20px;
-        }
-
-        #progressFill {
-            height: 100%;
-            background-color: #ffbc42;
-            width: 0;
-            transition: width 0.4s ease;
-        }
-
-        #charts canvas {
-            margin: 2rem auto;
-            max-width: 100%;
-            border-radius: 8px;
-            background-color: #333;
-            padding: 1rem;
-        }
-
-        button#downloadReport {
-            margin-top: 1.5rem;
-            padding: 0.6rem 1.2rem;
-            background-color: #3fbf7f;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        button#downloadReport:hover {
-            background-color: #2fa76d;
-        }
-
-        .key-insights {
-            text-align: left;
-            background-color: #333;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-top: 1rem;
-        }
-
-        .key-insights li {
-            margin-bottom: 0.8rem;
-            list-style: none;
-        }
-
-        .key-insights li:before {
-            content: "•";
-            color: #ffbc42;
-            font-weight: bold;
-            display: inline-block;
-            width: 1em;
-            margin-left: -1em;
-        }
-
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InsightWave - Engagement Analysis Calculator</title>
+  <style>
+    body, h2, p, button {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+    body {
+      background-color: #121212;
+      color: #f0f0f0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    .container {
+      width: 90%;
+      max-width: 600px;
+      padding: 20px;
+      background: #1e1e1e;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      text-align: center;
+    }
+    .button {
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .button.start { background-color: #FFDD57; }
+    .button.start:hover { background-color: #FFC107; }
+    .button.back, .button.next {
+      background-color: #FF6E40;
+    }
+    .button.back:hover, .button.next:hover {
+      background-color: #FF5722;
+    }
+    .progress-bar-container {
+      width: 100%;
+      background: #333;
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 20px 0;
+    }
+    .progress-bar {
+      height: 20px;
+      width: 0;
+      background: #FFDD57;
+      transition: width 0.2s;
+    }
+    .results {
+      text-align: left;
+      margin-top: 20px;
+    }
+    .chart-container {
+      margin-top: 20px;
+    }
+  </style>
 </head>
-<body class="dark-mode">
+<body>
 
-    <header>
-        <h1>InsightWave Engagement Analysis</h1>
-        <p>Deep insights into your audio content, powered by AI.</p>
-    </header>
+<div class="container">
+  <!-- Start Screen -->
+  <div id="startScreen" class="screen">
+    <h2>Welcome to InsightWave</h2>
+    <p>Analyze your audio content and gain AI-driven insights into engagement levels and sentiment.</p>
+    <button class="button start" onclick="nextScreen('uploadScreen')">Start Analysis</button>
+  </div>
 
-    <!-- Start Screen -->
-    <main id="app">
-        <section class="screen active" id="startScreen">
-            <h2>Welcome to InsightWave</h2>
-            <p>Analyze your audio content and gain AI-driven insights into engagement levels and sentiment.</p>
-            <button class="navigation" onclick="showScreen('uploadScreen')">Start Analysis</button>
-        </section>
+  <!-- Upload Screen -->
+  <div id="uploadScreen" class="screen" style="display: none;">
+    <h2>Upload File</h2>
+    <input type="file" id="fileInput" accept=".mp3,.mp4">
+    <div class="progress-bar-container">
+      <div id="progressBar" class="progress-bar"></div>
+    </div>
+    <div>
+      <button class="button back" onclick="prevScreen('startScreen')">Back</button>
+      <button class="button next" onclick="startAnalysis()">Calculate Engagement</button>
+    </div>
+  </div>
 
-        <!-- File Upload Screen -->
-        <section class="screen" id="uploadScreen">
-            <h2>Upload Your Audio File</h2>
-            <input type="file" id="fileInput" accept=".mp3,.wav">
-            <p class="hint">Supported formats: .mp3, .wav</p>
-            <div class="navigation">
-                <button onclick="showScreen('startScreen')">Back</button>
-                <button onclick="showScreen('analysisScreen')">Next</button>
-            </div>
-        </section>
+  <!-- Analysis Screen -->
+  <div id="analysisScreen" class="screen" style="display: none;">
+    <h2>Real-Time Analysis</h2>
+    <p>Analyzing volume, pitch, sentiment, and more...</p>
+    <div class="progress-bar-container">
+      <div id="progressBarAnalysis" class="progress-bar"></div>
+    </div>
+    <button class="button next" onclick="nextScreen('resultsScreen')">View Results</button>
+  </div>
 
-        <!-- Real-Time Analysis Screen -->
-        <section class="screen" id="analysisScreen">
-            <h2>Real-Time Analysis</h2>
-            <p id="progressText">Analyzing volume, pitch, sentiment, and more...</p>
-            <div class="progress-bar">
-                <div id="progressFill"></div>
-            </div>
-            <canvas id="realTimeChart" style="display: none;"></canvas>
-            <div class="navigation">
-                <button onclick="showScreen('uploadScreen')">Back</button>
-                <button onclick="showScreen('resultsScreen')">View Results</button>
-            </div>
-        </section>
+  <!-- Results Screen -->
+  <div id="resultsScreen" class="screen" style="display: none;">
+    <h2>Analysis Results</h2>
+    <div class="results">
+      <h3>Key Insights:</h3>
+      <ul>
+        <li><strong>Overall Engagement Score:</strong> 7.8/10</li>
+        <li><strong>Peak Engagement Times:</strong> Segment 1, Segment 3</li>
+        <li><strong>Improvement Tips:</strong> Increase interaction during pauses.</li>
+      </ul>
+      <button class="button next" onclick="downloadReport()">Download Report</button>
+    </div>
+    <button class="button back" onclick="prevScreen('analysisScreen')">Back</button>
+  </div>
+</div>
 
-        <!-- Results Screen -->
-        <section class="screen" id="resultsScreen">
-            <h2>Analysis Results</h2>
-            <div class="key-insights">
-                <h3>Key Insights</h3>
-                <ul>
-                    <li><strong>Overall Engagement Score:</strong> <span id="engagementScore">-</span>/10</li>
-                    <li><strong>Peak Engagement Times:</strong> Segment 1, Segment 3</li>
-                    <li><strong>Improvement Tips:</strong> Increase interaction during pauses</li>
-                </ul>
-            </div>
-            <div id="charts">
-                <canvas id="engagementChart"></canvas>
-                <canvas id="sentimentChart"></canvas>
-            </div>
-            <button id="downloadReport" onclick="downloadReport()">Download Report</button>
-            <div class="navigation">
-                <button onclick="showScreen('analysisScreen')">Back</button>
-            </div>
-        </section>
-    </main>
+<script>
+  function nextScreen(screenId) {
+    document.querySelectorAll('.screen').forEach(screen => screen.style.display = 'none');
+    document.getElementById(screenId).style.display = 'block';
+  }
 
-    <script>
-        // JavaScript to handle screen navigation and functionality
+  function prevScreen(screenId) {
+    nextScreen(screenId);
+  }
 
-        function showScreen(screenId) {
-            document.querySelectorAll('.screen').forEach(screen => {
-                screen.classList.remove('active');
-            });
-            document.getElementById(screenId).classList.add('active');
-        }
+  function startAnalysis() {
+    nextScreen('analysisScreen');
+    simulateProgressBar('progressBarAnalysis', 100, 2000, () => {
+      document.getElementById('progressBarAnalysis').style.width = '100%';
+    });
+  }
 
-        showScreen('startScreen'); // Start on the first screen
+  function simulateProgressBar(barId, targetWidth, duration, callback) {
+    const bar = document.getElementById(barId);
+    let width = 0;
+    const interval = setInterval(() => {
+      width += 1;
+      bar.style.width = width + '%';
+      if (width >= targetWidth) {
+        clearInterval(interval);
+        if (callback) callback();
+      }
+    }, duration / targetWidth);
+  }
 
-        // Function to simulate the analysis process
-        function startAnalysis() {
-            const progressText = document.getElementById('progressText');
-            const progressFill = document.getElementById('progressFill');
-            const realTimeChart = document.getElementById('realTimeChart');
+  function downloadReport() {
+    alert("Report downloaded as CSV.");
+  }
+</script>
 
-            progressText.textContent = 'Analyzing audio content...';
-            realTimeChart.style.display = 'block';
-
-            let progress = 0;
-            const interval = setInterval(() => {
-                progress += 10;
-                progressFill.style.width = progress + '%';
-                if (progress >= 100) {
-                    clearInterval(interval);
-                    displayResults();
-                }
-            }, 500);
-        }
-
-        // Function to display results
-        function displayResults() {
-            const engagementScore = document.getElementById('engagementScore');
-            engagementScore.textContent = (Math.random() * 10).toFixed(2);
-
-            const engagementChart = new Chart(document.getElementById('engagementChart').getContext('2d'), {
-                type: 'line',
-                data: {
-                    labels: ['0s', '10s', '20s', '30s', '40s', '50s'],
-                    datasets: [{
-                        label: 'Engagement Score',
-                        data: Array.from({ length: 6 }, () => Math.floor(Math.random() * 10)),
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        fill: false,
-                    }]
-                },
-                options: {
-                    responsive: true,
-                }
-            });
-
-            const sentimentChart = new Chart(document.getElementById('sentimentChart').getContext('2d'), {
-                type: 'line',
-                data: {
-                    labels: ['0s', '10s', '20s', '30s', '40s', '50s'],
-                    datasets: [{
-                        label: 'Sentiment Score',
-                        data: Array.from({ length: 6 }, () => Math.floor(Math.random() * 10)),
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                        fill: false,
-                    }]
-                },
-                options: {
-                    responsive: true,
-                }
-            });
-        }
-
-        function downloadReport() {
-            alert("Report downloaded!");
-        }
-    </script>
 </body>
 </html>
